@@ -31,6 +31,7 @@ jenkins:
             name: "ci-runner"
             permissions:
               - "Overall/Read"
+              - "Agent/Build"
               - "Job/Read"
               - "Job/Build"
               - "Job/Cancel"
@@ -56,7 +57,9 @@ security:
   queueItemAuthenticator:
     authenticators:
       - global:
-          strategy: "triggeringUsersAuthorizationStrategy"
+          strategy:
+            specificUsersAuthorizationStrategy:
+              userid: "ci-runner"
 
 unclassified:
   location:
