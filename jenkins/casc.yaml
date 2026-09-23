@@ -37,7 +37,6 @@ jenkins:
               - "Job/Build"
               - "Job/Cancel"
               - "Job/Workspace"
-              - "Run/Replay"
 
   # CSRF protection.
   crumbIssuer:
