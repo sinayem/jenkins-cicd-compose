@@ -1,0 +1,21 @@
+# Pipeline core (declarative pipeline, stages, Jenkinsfile support)
+workflow-aggregator
+pipeline-stage-view
+# Source control
+git
+# Run pipeline stages inside Docker containers (agent { docker { ... } })
+docker-workflow
+# Configuration as Code (casc.yaml)
+configuration-as-code
+# Security: fine-grained permissions + build authorization
+matrix-auth
+authorize-project
+credentials
+credentials-binding
+# Logging / reporting
+timestamper
+junit
+warnings-ng
+audit-trail
+# Workspace housekeeping
+ws-cleanup

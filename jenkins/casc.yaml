@@ -1,0 +1,63 @@
+# Jenkins Configuration as Code: security hardening.
+# Passwords are read from Docker secrets mounted at /run/secrets/*.
+jenkins:
+  systemMessage: "Hardened Jenkins CI/CD - configured via JCasC. Unauthorised access prohibited."
+  numExecutors: 2
+  mode: NORMAL
+
+  # Local user database; self sign-up disabled.
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        # Administrator: manages Jenkins configuration only.
+        - id: "admin"
+          name: "Jenkins Administrator"
+          password: "${readFile:/run/secrets/jenkins_admin_password}"
+        # Least-privilege account used to run pipelines (no admin rights).
+        - id: "ci-runner"
+          name: "CI Pipeline Runner"
+          password: "${readFile:/run/secrets/ci_runner_password}"
+
+  # Matrix authorization: anonymous users get NO permissions.
+  authorizationStrategy:
+    globalMatrix:
+      entries:
+        - user:
+            name: "admin"
+            permissions:
+              - "Overall/Administer"
+        - user:
+            name: "ci-runner"
+            permissions:
+              - "Overall/Read"
+              - "Job/Read"
+              - "Job/Build"
+              - "Job/Cancel"
+              - "Job/Workspace"
+              - "Run/Replay"
+              - "Credentials/UseItem"
+
+  # CSRF protection.
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+
+  # Keep the agent-to-controller security subsystem enabled.
+  remotingSecurity:
+    enabled: true
+
+  # Inbound agent port disabled (no external agents; port not published either).
+  slaveAgentPort: -1
+
+security:
+  # Builds run with the permissions of the user who triggered them,
+  # instead of the all-powerful SYSTEM account (Authorize Project plugin).
+  queueItemAuthenticator:
+    authenticators:
+      - global:
+          strategy: "triggeringUsersAuthorizationStrategy"
+
+unclassified:
+  location:
+    url: "http://localhost:8080/"

@@ -1,0 +1,12 @@
+# Never commit secrets (passwords, tokens, keys)
+secrets/*
+!secrets/.gitkeep
+.env
+*.pem
+*.key
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
