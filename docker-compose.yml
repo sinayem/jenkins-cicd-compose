@@ -63,7 +63,7 @@ services:
       # Require TLS and verify the daemon's certificate (mutual TLS).
       DOCKER_TLS_VERIFY: "1"
       # Skip the interactive setup wizard; JCasC creates the admin user instead.
-      JAVA_OPTS: -Djenkins.install.runSetupWizard=false
+      JAVA_OPTS: -Djenkins.install.runSetupWizard=false -Dcom.cloudbees.plugins.credentials.UseItemPermission=true
       # Location of the Configuration-as-Code file baked into the image.
       CASC_JENKINS_CONFIG: /var/jenkins_conf/casc.yaml
     # Passwords are Docker secrets (files under /run/secrets), not plain
@@ -71,6 +71,7 @@ services:
     secrets:
       - jenkins_admin_password
       - ci_runner_password
+      - dockerhub_token
     volumes:
       # Persists jobs, build history, logs, archived artifacts and plugins.
       - jenkins-data:/var/jenkins_home
@@ -108,3 +109,6 @@ secrets:
     file: ./secrets/jenkins_admin_password.txt
   ci_runner_password:
     file: ./secrets/ci_runner_password.txt
+  dockerhub_token:
+    file: ./secrets/dockerhub_token.txt
+

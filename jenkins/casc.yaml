@@ -32,12 +32,12 @@ jenkins:
             permissions:
               - "Overall/Read"
               - "Agent/Build"
+              - "Credentials/UseItem"
               - "Job/Read"
               - "Job/Build"
               - "Job/Cancel"
               - "Job/Workspace"
               - "Run/Replay"
-              - "Credentials/UseItem"
 
   # CSRF protection.
   crumbIssuer:
@@ -62,5 +62,25 @@ security:
               userid: "ci-runner"
 
 unclassified:
+  # Audit Trail: records who did what (config changes, builds, deletions)
+  audit-trail:
+    logBuildCause: true
+    loggers:
+      - logFile:
+          log: "/var/jenkins_home/audit-trail/audit.log"
+          limit: 10        # MB per file
+          count: 5         # files kept (rotation / retention)
   location:
     url: "http://localhost:8080/"
+
+# Docker Hub push credential, injected from Docker secret (never stored in Git)
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: "dockerhub-creds"
+              username: "sinayem"
+              password: "${readFile:/run/secrets/dockerhub_token}"
+              description: "Docker Hub push token (from Docker secret)"
